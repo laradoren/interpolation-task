@@ -12,9 +12,3 @@ const PREDEFINED_INTERPOLATION = {
   "sine-in-out": "0.45, 0.05, 0.55, 0.95",
   "custom": "0.3, 0.3, 0.7, 0.7"
 };
-
-const ITERACTION_TYPE = {
-    button: "button",
-    drag: "drag",
-    input: "input"
-};

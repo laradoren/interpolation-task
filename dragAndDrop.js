@@ -3,8 +3,8 @@ const offsetX = BB.left;
 const offsetY = BB.top;
 
 let currentCurveParameters = {};
-let shapes = [];
-let dragok = false;
+let controlPoints = [];
+let isDraggingStart = false;
 let startX;
 let startY;
 
@@ -13,14 +13,15 @@ const setCurrentCurve = (start, cp1, cp2, end) => {
   currentCurveParameters.controlPoint1 = cp1;
   currentCurveParameters.controlPoint2 = cp2;
   currentCurveParameters.end = end;
-  shapes = [cp1, cp2];
+  controlPoints = [cp1, cp2];
 };
 
-function changeCurveAfterDragging(changedShapes) {
+function changeCurveAfterDragging(changedPoints) {
   let { start, end } = currentCurveParameters;
-  setCurrentCurve(start, changedShapes[0], changedShapes[1], end);
-  setInputValue([changedShapes[0], changedShapes[1]]);
-  redrawCurve(start, changedShapes[0], changedShapes[1], end);
+  let [controlPoint1, controlPoint2] = changedPoints;
+  setCurrentCurve(start, controlPoint1, controlPoint2, end);
+  setInputValue([controlPoint1, controlPoint2]);
+  redrawCurve(start, controlPoint1, controlPoint2, end);
 }
 
 canvas.onmousedown = (e) => {
@@ -30,19 +31,18 @@ canvas.onmousedown = (e) => {
   const mx = parseInt(e.clientX - offsetX);
   const my = parseInt(e.clientY - offsetY);
 
-  dragok = false;
-  for (let i = 0; i < shapes.length; i++) {
-    var s = shapes[i];
-    const dx = s.x - mx;
-    const dy = s.y - my;
+  isDraggingStart = false;
+  controlPoints.forEach((controlPoint) => {
+    const dx = controlPoint.x - mx;
+    const dy = controlPoint.y - my;
     if (
-      !dragok &&
+      !isDraggingStart &&
       dx * dx + dy * dy < CONTROL_POINT_RADIUS * CONTROL_POINT_RADIUS
     ) {
-      dragok = true;
-      s.isDragging = true;
+      isDraggingStart = true;
+      controlPoint.isDragging = true;
     }
-  }
+  });
   startX = mx;
   startY = my;
 };
@@ -51,14 +51,14 @@ canvas.onmouseup = (e) => {
   e.preventDefault();
   e.stopPropagation();
 
-  dragok = false;
-  for (let i = 0; i < shapes.length; i++) {
-    shapes[i].isDragging = false;
-  }
+  isDraggingStart = false;
+  controlPoints.forEach(controlPoint => {
+    controlPoint.isDragging = false;
+  });
 };
 
 canvas.onmousemove = (e) => {
-  if (dragok) {
+  if (isDraggingStart) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -68,14 +68,14 @@ canvas.onmousemove = (e) => {
     const dx = mx - startX;
     const dy = my - startY;
 
-    shapes.map((shape) => {
-      if (shape.isDragging) {
-        shape.x += dx;
-        shape.y += dy;
+    controlPoints.map((controlPoint) => {
+      if (controlPoint.isDragging) {
+        controlPoint.x += dx;
+        controlPoint.y += dy;
       }
     });
 
-    changeCurveAfterDragging(shapes);
+    changeCurveAfterDragging(controlPoints);
     setActiveButton("custom");
 
     startX = mx;

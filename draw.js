@@ -1,17 +1,14 @@
-// Define canvas and context
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const drawCanvasGrid = () => {
   for (let i = 5; i >= 0; i--) {
-    //draw horizontal grid lines
     ctx.beginPath();
     ctx.moveTo(0, 50 + i * 100);
     ctx.lineTo(ALL_CANVAS_SIZE, 50 + i * 100);
     ctx.strokeStyle = "#90A8C3";
     ctx.lineWidth = 0.5;
     ctx.stroke();
-    //draw vertical grid lines
     ctx.beginPath();
     ctx.moveTo(50 + i * 100, 0);
     ctx.lineTo(50 + i * 100, ALL_CANVAS_SIZE);

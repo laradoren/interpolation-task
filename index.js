@@ -51,9 +51,7 @@ const setInputValue = (points) => {
 };
 
 const setActiveButton = (buttonId) => {
-  if (activeButton) {
-    activeButton.classList.remove("active");
-  }
+  activeButton && activeButton.classList.remove("active");
   activeButton = document.getElementById(buttonId);
   activeButton.classList.add("active");
 };
@@ -88,6 +86,7 @@ const renderButtons = () => {
 };
 
 const changeBezieCurve = (start, cp1, cp2, end, buttonId = null) => {
+  if(isAnimationRun) return;
   buttonId && setActiveButton(buttonId);
   setInputValue([cp1, cp2]);
   setCurrentCurve(start, cp1, cp2, end);
