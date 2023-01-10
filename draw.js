@@ -25,7 +25,7 @@ const drawBezie = (start, cp1, cp2, end) => {
     ctx.beginPath();
     ctx.moveTo(start.x, start.y);
     ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
-    ctx.strokeStyle = "#ADA7C9";
+    ctx.strokeStyle = "#605A73";
     ctx.lineWidth = 3;
     ctx.stroke();
 }
@@ -44,11 +44,11 @@ const drawControlPoint = (start, point, index) => {
 }
 
 const drawStartEndPoints = (start, end) => {
-    ctx.fillStyle = "#ADA7C9";
+    ctx.fillStyle = "#605A73";
     ctx.beginPath();
     ctx.arc(start.x, start.y, 5, 0, 2 * Math.PI); // Start point
     ctx.arc(end.x, end.y, 5, 0, 2 * Math.PI); // End point
-    ctx.fillStyle = "#ADA7C9";
+    ctx.fillStyle = "#605A73";
     ctx.fill();
 }
 
@@ -59,6 +59,7 @@ const clearCanvas = () => {
 
 const redrawCurve = () => {
     let {start, controlPoint1, controlPoint2, end } = currentCurveParameters;
+    setInputValue([controlPoint1, controlPoint2]);
     clearCanvas();
     drawBezie(start, controlPoint1, controlPoint2, end);
     drawControlPoint(start, controlPoint1, 0);
