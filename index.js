@@ -1,15 +1,19 @@
 const input = document.getElementById("input");
 const actionBar = document.getElementById("actionBar");
 let activeButton = document.getElementById("custom");
+const copyButton = document.getElementById("copyButton");
+
+copyButton.onclick = () => {
+  input.select();
+  navigator.clipboard.writeText(input.value);
+};
 
 input.onchange = (e) => {
-  //adding validation
   let { isValid: isInputValid, points } = validateInput(e.target.value);
   if (isInputValid) {
     let { start, cp1, cp2, end } = definedPoints(points);
     changeBezieCurve(start, cp1, cp2, end, "custom");
-  } 
-  console.log(points);
+  }
   e.target.value = points;
 };
 
@@ -17,28 +21,21 @@ const validateInput = (userInput) => {
   let isValid = true;
   let inputedPoints = userInput.split(",");
   if (inputedPoints.length < 4) return { isValid: false, points: "" };
+
   let points = inputedPoints.map((point) => {
     let trimedPoint = point.trim();
-    if (!trimedPoint) {
-      isValid = false;
-      return "0.0";
-    }
+    if (!trimedPoint) isValid = false;
 
     let parsedPoint = parseFloat(trimedPoint);
-    if (!parsedPoint && parsedPoint !== 0.0) {
-      isValid = false;
-      return "0.0";
-    }
+    if (!parsedPoint && parsedPoint !== 0.0) isValid = false;
 
-    if(parsedPoint > 1.1) {
-        parsedPoint = "1.1"
-    }
+    if (parsedPoint > 1.1) parsedPoint = "1.1";
+    if (parsedPoint < -0.1) parsedPoint = "-0.1";
 
-    if(parsedPoint < -0.1) {
-        parsedPoint = "-0.1"
-    }
+    let pointToString = parsedPoint.toString();
+    if (!pointToString.includes(".")) pointToString += ".0";
 
-    return parsedPoint == 0 ? "0.0" : parsedPoint;
+    return isValid ? pointToString : "0.0";
   });
 
   return { isValid, points: points.join(", ") };
@@ -48,11 +45,17 @@ const setInputValue = (points) => {
   let pointsString = points.map((point) => {
     let x = (point.x - START_POINT) / CANVAS_WORKSPACE_SIZE;
     let y = (END_POINT - point.y) / CANVAS_WORKSPACE_SIZE;
-    x = x === 0 ? "0.0" : x;
-    y = y === 0 ? "0.0" : y;
     return x + ", " + y;
   });
   input.value = pointsString.join(", ");
+};
+
+const setActiveButton = (buttonId) => {
+  if (activeButton) {
+    activeButton.classList.remove("active");
+  }
+  activeButton = document.getElementById(buttonId);
+  activeButton.classList.add("active");
 };
 
 const definedPoints = (values) => {
@@ -84,20 +87,11 @@ const renderButtons = () => {
   });
 };
 
-const changeBezieCurve = (start, cp1, cp2, end, button) => {
-  if (activeButton) {
-    activeButton.classList.remove("active");
-  }
-  activeButton = document.getElementById(button);
-  activeButton.classList.add("active");
-  clearCanvas();
+const changeBezieCurve = (start, cp1, cp2, end, buttonId = null) => {
+  buttonId && setActiveButton(buttonId);
   setInputValue([cp1, cp2]);
   setCurrentCurve(start, cp1, cp2, end);
-  drawBezie(start, cp1, cp2, end);
-  drawControlPoint(start, cp1, 0);
-  drawControlPoint(end, cp2, 1);
-  drawControlPoints();
-  drawStartEndPoints(start, end);
+  redrawCurve(start, cp1, cp2, end);
 };
 
 const setCustomCurve = () => {
@@ -112,4 +106,4 @@ const main = () => {
   setCustomCurve();
 };
 
-main();
+window.onload = main();

@@ -10,11 +10,15 @@
   <body>
     <div class="main">
       <div class="actionBar" id="actionBar">
-        <input
-          id="input"
-          placeholder="0.0, 0.0, 0.0, 0.0"
-          title="Inputed points should be 4 numbers for 2 controol points per dots like 0.0, 0.0, 0.0, 0.0 "
-        />
+        <div class="inputBar">
+          <input
+            id="input"
+            placeholder="0.0, 0.0, 0.0, 0.0"
+            title="Inputed points should be 4 numbers for 2 controol points per dots like 0.0, 0.0, 0.0, 0.0 "
+          />
+          <button id="copyButton">Copy</button>
+        </div>
+        <button id="runButton" class="run">Run</button>
       </div>
       <canvas class="canvas" id="canvas" width="600px" height="600px"></canvas>
     </div>
@@ -22,5 +26,6 @@
     <script src="draw.js"></script>
     <script src="dragAndDrop.js"></script>
     <script src="index.js"></script>
+    <script src="run.js"></script>
   </body>
 </html>
